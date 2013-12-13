@@ -10,6 +10,7 @@ class Phiori:
 	resources = {}
 	response = ""
 	variables = None
+	words = None
 	
 	@staticmethod
 	def handle(event):

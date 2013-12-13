@@ -2,10 +2,11 @@ import sys, os
 import json, locale, random, re, time, urllib.request, urllib.parse
 from .shiori import *
 from .phiori import *
-from .collections import LiveDict
+from .collections import LiveDict, LiveJsonDict
 
 def load(path, _len):
-	Phiori.variables = LiveDict(os.path.join(path, "variable.txt"))
+	Phiori.variables = LiveDict(os.path.join(path, "variable.dat"))
+	Phiori.words = LiveJsonDict(os.path.join(path, "words.dic"))
 	Phiori.objects = {
 		"config": Phiori.configs,
 		"encoding": sys.getdefaultencoding(),
@@ -23,6 +24,7 @@ def load(path, _len):
 		"time": time,
 		"urllib": urllib,
 		"var": Phiori.variables,
+		"words": Phiori.words,
 		"write": Phiori.write,
 		"writeline": Phiori.writeline,
 	}
