@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <Python.h>
+#include <direct.h>
 
 const char *SHIORI_RESPONSE_200 = "SHIORI/3.0 200 OK\r\nValue: ";
 const char *CRLF = "\r\n";
@@ -15,9 +16,12 @@ char *getException(long *len);
 extern "C" __declspec(dllexport) BOOL __cdecl load(HGLOBAL h, long len) {
 	memcpy(dllRoot, (char *)GlobalLock(h), len);
 	GlobalFree(h);
-	char libRoot[MAX_PATH * 2];
-	sprintf(libRoot, "%s;%s\\lib.zip", dllRoot, dllRoot);
-	_putenv_s("PYTHONPATH", libRoot);
+	//chdir(dllRoot);
+	int wDllRootLength = MultiByteToWideChar(CP_UTF8, 0, dllRoot, -1, NULL, 0);
+	wchar_t *wDllRoot = new WCHAR[wDllRootLength];
+	MultiByteToWideChar(CP_UTF8, 0, dllRoot, -1, (LPWSTR)wDllRoot, wDllRootLength);
+	Py_SetProgramName(L"phiori");
+	Py_SetPythonHome(wDllRoot);
 	Py_Initialize();
 	mainModule = PyImport_AddModule("__main__");
 	phioriModule = PyImport_ImportModule("phiori");
