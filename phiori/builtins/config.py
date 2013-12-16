@@ -1,5 +1,5 @@
 def loadconfig():
-	with open(os.path.join(path, "config.txt"), "r") as f:
+	with open(os.path.join(phiori.path, "config.txt"), "r") as f:
 		lines = f.read().replace("\r", "").split("\n")
 		for line in lines:
 			line = line.strip()
@@ -11,7 +11,7 @@ def loadconfig():
 				phiori.config[k.strip()] = v.strip()
 
 def saveconfig():
-	with open(os.path.join(path, "config.txt"), "w") as f:
+	with open(os.path.join(phiori.path, "config.txt"), "w") as f:
 		for k, v in phiori.config.items():
 			f.write(k + "," + v + "\n")
 
@@ -20,7 +20,7 @@ def defaultconfig():
 		"talk.interval": 15,
 	}
 
-if os.path.exists(os.path.join(path, "config.txt")):
+if os.path.exists(os.path.join(phiori.path, "config.txt")):
 	loadconfig()
 else:
 	defaultconfig()
