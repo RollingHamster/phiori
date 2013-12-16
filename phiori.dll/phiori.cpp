@@ -16,7 +16,6 @@ char *getException(long *len);
 extern "C" __declspec(dllexport) BOOL __cdecl load(HGLOBAL h, long len) {
 	memcpy(dllRoot, (char *)GlobalLock(h), len);
 	GlobalFree(h);
-	//chdir(dllRoot);
 	int wDllRootLength = MultiByteToWideChar(CP_UTF8, 0, dllRoot, -1, NULL, 0);
 	wchar_t *wDllRoot = new WCHAR[wDllRootLength];
 	MultiByteToWideChar(CP_UTF8, 0, dllRoot, -1, (LPWSTR)wDllRoot, wDllRootLength);
