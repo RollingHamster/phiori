@@ -55,3 +55,9 @@ class LiveJsonDict(dict):
 	popitem = _live(dict.popitem)
 	setdefault = _live(dict.setdefault)
 	update = _live(dict.update)
+
+class PropertyDict(dict):
+	
+    def __init__(self, *args, **kwargs):
+        super(PropertyDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
