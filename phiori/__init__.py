@@ -8,39 +8,113 @@ def load(path, _len):
 	Phiori.variables = LiveDict(os.path.join(path, "variable.dat"))
 	Phiori.words = LiveJsonDict(os.path.join(path, "words.dic"))
 	Phiori.objects = {
-		"config": Phiori.configs,
-		"encoding": sys.getdefaultencoding(),
-		"locale": locale.getdefaultlocale(),
-		"handle": Phiori.handle,
-		"info": Phiori.info,
+		#phiori variables
+		"phiori": {
+			"config": Phiori.configs,
+			"encoding": sys.getdefaultencoding(),
+			"info": Phiori.info,
+			"locale": locale.getdefaultlocale(),
+			"path": path,
+			"res": Phiori.resources,
+			"var": Phiori.variables,
+			"words": Phiori.words,
+		},
+		#imports
 		"json": json,
 		"os": os,
-		"path": path,
-		"print": Phiori.print,
 		"random": random,
 		"re" : re,
-		"res": Phiori.resources,
 		"sys": sys,
 		"time": time,
 		"urllib": urllib,
-		"var": Phiori.variables,
-		"words": Phiori.words,
+		#builtin functions
+		"abs": abs,
+		"all": all,
+		"any": any,
+		"ascii": ascii,
+		"bin": bin,
+		"bool": bool,
+		"bytearray": bytearray,
+		"bytes": bytes,
+		"callable": callable,
+		"chr": chr,
+		"classmethod": classmethod,
+		"compile": compile,
+		"delattr": delattr,
+		"dict": dict,
+		"dir": dir,
+		"divmod": divmod,
+		"enumerate": enumerate,
+		"eval": eval,
+		"exec": exec,
+		"filter": filter,
+		"float": float,
+		"format": format,
+		"frozenset": frozenset,
+		"getattr": getattr,
+		"globals": globals,
+		"hasattr": hasattr,
+		"hash": hash,
+		"help": help,
+		"hex": hex,
+		"id": id,
+		"input": input,
+		"int": int,
+		"isinstance": isinstance,
+		"issubclass": issubclass,
+		"iter": iter,
+		"len": len,
+		"list": list,
+		"locals": locals,
+		"map": map,
+		"max": max,
+		"memoryview": memoryview,
+		"min": min,
+		"next": next,
+		"object": object,
+		"oct": oct,
+		"open": open,
+		"ord": ord,
+		"pow": pow,
+		"property": property,
+		"range": range,
+		"repr": repr,
+		"reversed": reversed,
+		"round": round,
+		"set": set,
+		"setattr": setattr,
+		"slice": slice,
+		"sorted": sorted,
+		"staticmethod": staticmethod,
+		"str": str,
+		"sum": sum,
+		"super": super,
+		"tuple": tuple,
+		"type": type,
+		"vars": vars,
+		"zip": zip,
+		"__import__": __import__,
+		#phiori functions
+		"handle": Phiori.handle,
+		"print": Phiori.print,
 		"write": Phiori.write,
 		"writeline": Phiori.writeline,
 	}
+	Phiori.objects["_"] = Phiori.objects["phiori"]
+	Phiori.objects["P"] = Phiori.objects["phiori"]
 	for filename in os.listdir(os.path.join(path, "phiori", "builtins")):
 		if filename.endswith(".py"):
 			try:
 				with open(os.path.join(path, "phiori", "builtins", filename), "r", encoding=sys.getdefaultencoding()) as f:
-					exec(f.read(), Phiori.objects)
-			except ex:
+					exec(f.read(), {"phiori": Phiori.objects})
+			except:
 				pass
 	for filename in os.listdir(path):
 		if filename.endswith(".py"):
 			try:
 				with open(os.path.join(path, filename), "r", encoding=sys.getdefaultencoding()) as f:
 					exec(f.read(), Phiori.objects)
-			except ex:
+			except:
 				pass
 	return True
 
@@ -66,9 +140,9 @@ def request(req, _len):
 					elif Phiori.response:
 						res.headers["Value"] = Phiori.response
 					Phiori.response = ""
-				except ex:
+				except Exception as ex:
 					Phiori.response = ""
-					res.headers["Value"] = r"{}\n\n{}".format(str(handler), str(ex))
+					res.headers["Value"] = r"{}\n\n{}\e".format(str(handler), str(ex))
 					return str(res)
 		elif req.headers.get("ID") and req.headers.get("ID") in Phiori.resources:
 			res.headers["Value"] = Phiori.resources["ID"]

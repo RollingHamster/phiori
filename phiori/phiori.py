@@ -13,6 +13,22 @@ class Phiori:
 	words = None
 	
 	@staticmethod
+	def event(handler, *args, **kwargs):
+		result = ""
+		try:
+			response = handler(*args, **kwargs)
+			if isinstance(response, Iterable):
+				for res in handler(*args, **kwargs):
+					result += str(res)
+			else:
+				result = response
+				if result:
+					result = str(result)
+		except Exception as ex:
+			result = str(ex)
+		return result
+	
+	@staticmethod
 	def handle(event):
 		def decorator(func):
 			if not Phiori.handlers.get(event):
@@ -22,17 +38,6 @@ class Phiori:
 				return Phiori.event(func, *args, **kwargs)
 			return wrapper
 		return decorator
-	
-	@staticmethod
-	def event(handler, *args, **kwargs):
-		result = ""
-		response = handler(*args, **kwargs)
-		if isinstance(response, Iterable):
-			for res in handler(*args, **kwargs):
-				result += res
-		else:
-			result = response
-		return result
 	
 	@staticmethod
 	def print(*objects, sep=" ", end=r"\n"):

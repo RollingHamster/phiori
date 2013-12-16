@@ -8,15 +8,15 @@ def loadconfig():
 			kv = line.split(",", 1)
 			if len(kv) == 2:
 				k, v = kv
-				config[k.strip()] = v.strip()
+				phiori.config[k.strip()] = v.strip()
 
 def saveconfig():
 	with open(os.path.join(path, "config.txt"), "w") as f:
-		for k, v in config.items():
+		for k, v in phiori.config.items():
 			f.write(k + "," + v + "\n")
 
 def defaultconfig():
-	config = {
+	phiori.config = {
 		"talk.interval": 15,
 	}
 

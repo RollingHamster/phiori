@@ -1,3 +1,12 @@
+def initsurface(count=2):
+	res = ""
+	for i in range(0, count - 1):
+		if r > 1:
+			res += r"\p[{}]".format(narrator)
+		else:
+			res += "\\" + str(narrator)
+	return res
+
 def makemenu(*args, **kwargs):
 	res = ""
 	items = {}

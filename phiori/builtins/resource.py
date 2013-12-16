@@ -8,7 +8,7 @@ def loadres():
 			kv = line.split(",", 1)
 			if len(kv) == 2:
 				k, v = kv
-				res[k.strip()] = v.strip()
+				phiori.res[k.strip()] = v.strip()
 
 if os.path.exists(os.path.join(path, "resource.txt")):
-	loadconfig()
+	loadres()
