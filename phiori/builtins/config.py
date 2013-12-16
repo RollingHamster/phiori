@@ -1,5 +1,5 @@
 def loadconfig():
-	with open(os.path.join(phiori.path, "config.txt"), "r") as f:
+	with open(os.path.join(phiori.path, "config.txt"), "r", encoding=phiori.encoding) as f:
 		lines = f.read().replace("\r", "").split("\n")
 		for line in lines:
 			line = line.strip()
@@ -11,9 +11,9 @@ def loadconfig():
 				phiori.config[k.strip()] = v.strip()
 
 def saveconfig():
-	with open(os.path.join(phiori.path, "config.txt"), "w") as f:
+	with open(os.path.join(phiori.path, "config.txt"), "w", encoding=phiori.encoding) as f:
 		for k, v in phiori.config.items():
-			f.write(k + "," + v + "\n")
+			f.write(str(k) + "," + str(v) + "\n")
 
 def defaultconfig():
 	phiori.config = {

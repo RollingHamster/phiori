@@ -14,15 +14,20 @@ def makemenu(*args, **kwargs):
 		for arg in args:
 			items[arg] = arg
 	if kwargs:
-		for k, v in kwargs:
+		for k, v in kwargs.items():
 			items[k] = v
-	for k, v in items:
-		res += makemenuitem(k, v)
+	for k, v in items.items():
+		res += makemenuitem(v, k)
+	return res
 
 def makemenuitem(title, id=None, *args):
-	res = r"\![*]\q[{},{}".format(title, id or title)
+	res = r"\![*]\q[{}".format(title)
+	if id:
+		res += ",{}".format(id)
+	else:
+		res += ",{}".format(title)
 	if isinstance(id, str):
-		if str.startswith("On"):
+		if id.startswith("On"):
 			for arg in args:
 				res += arg + ","
 			res = res[:-1]
