@@ -106,7 +106,7 @@ def load(path, _len):
 		if filename.endswith(".py"):
 			try:
 				with open(os.path.join(path, "phiori", "builtins", filename), "r", encoding=sys.getdefaultencoding()) as f:
-					exec(f.read(), {"phiori": Phiori.objects})
+					exec(f.read(), Phiori.objects)
 			except:
 				pass
 	for filename in os.listdir(path):
