@@ -1,5 +1,5 @@
 import sys, os
-import json, locale, random, re, time, urllib.request, urllib.parse
+import datetime, json, locale, random, re, time, urllib.request, urllib.parse
 from .shiori import *
 from .phiori import *
 from .collections import LiveDict, LiveJsonDict, PropertyDict
@@ -20,6 +20,7 @@ def load(path, _len):
 			"words": Phiori.words,
 		}),
 		#imports
+		"datetime": datetime,
 		"json": json,
 		"os": os,
 		"random": random,
