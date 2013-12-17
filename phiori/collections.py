@@ -44,7 +44,7 @@ class LiveJsonDict(dict):
 		def wrap(self, *args, **kwargs):
 			result = func(self, *args, **kwargs)
 			with open(self.filename, "w", encoding=sys.getdefaultencoding()) as f:
-				json.dump(self, f, sort_keys=True, indent=4)
+				json.dump(self, f, ensure_ascii=False, sort_keys=True, indent=4)
 			return result
 		return wrap
 	
