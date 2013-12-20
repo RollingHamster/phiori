@@ -4,9 +4,9 @@ def _stroke_mousemove(*args, **kwargs):
 	if "stroke.collision" not in phiori.var:
 		phiori.var["stroke.collision"] = ""
 		phiori.var["stroke.point"] = 0
-	if phiori.var["stroke.collision"] != kwargs["Reference4"]:
+	if phiori.var["stroke.collision"] != kwargs.get("Reference4"):
 		phiori.var["stroke.point"] = 0
-		phiori.var["stroke.collision"] = kwargs["Reference4"]
+		phiori.var["stroke.collision"] = kwargs.get("Reference4")
 		phiori.var["stroke.begintime"] = time.time()
 	elif phiori.var["stroke.collision"]:
 		phiori.var["stroke.point"] += 1
