@@ -28,6 +28,7 @@ def makemenuitem(title, id=None, *args):
 		res += ",{}".format(title)
 	if isinstance(id, str):
 		if id.startswith("On"):
+			res += ","
 			for arg in args:
 				res += arg + ","
 			res = res[:-1]
