@@ -131,20 +131,19 @@ def request(req, _len):
 	res = Shiori.makeresponse("phiori", 204)
 	if req.method == "GET":
 		res = Shiori.makeresponse("phiori")
-		ss = None
+		res.headers["Value"] = ""
 		if req.headers.get("ID", "").startswith("On") and req.headers.get("ID") in Phiori.handlers:
 			for handler in Phiori.handlers[req.headers.get("ID")]:
 				try:
 					ss = Phiori.event(handler, **req.headers)
 					if ss:
-						res.headers["Value"] = str(ss)
-					elif Phiori.response:
-						res.headers["Value"] = Phiori.response
-					Phiori.response = ""
+						Phiori.response += str(ss)
+					del ss
 				except Exception as ex:
 					Phiori.response = ""
 					res.headers["Value"] = r"{}\n\n{}\e".format(str(handler), str(ex))
 					return str(res)
+			res.headers["Value"] = Phiori.response
 		elif req.headers.get("ID") and req.headers.get("ID") in Phiori.resources:
 			res.headers["Value"] = Phiori.resources["ID"]
 		else:
