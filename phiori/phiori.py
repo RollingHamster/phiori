@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, traceback
 from collections import Iterable
 
 class Phiori:
@@ -24,8 +24,9 @@ class Phiori:
 				result = response
 				if result:
 					result = str(result)
-		except Exception as ex:
-			result = str(ex)
+		except:
+			exc_type, exc_value, exc_traceback = sys.exc_info()
+			result = r"\0\b2\_q{}\x\c\e".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]"))
 		return result
 	
 	@staticmethod

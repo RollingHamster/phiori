@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, traceback
 import datetime, json, locale, random, re, time, urllib.request, urllib.parse
 from .shiori import *
 from .phiori import *
@@ -104,17 +104,19 @@ def load(path, _len):
 	Phiori.objects["_"] = Phiori.objects["phiori"]
 	Phiori.objects["P"] = Phiori.objects["phiori"]
 	for filename in os.listdir(os.path.join(path, "phiori", "builtins")):
-		if filename.endswith(".py"):
+		if os.path.splitext(filename)[1] == ".py":
 			try:
 				with open(os.path.join(path, "phiori", "builtins", filename), "r", encoding=sys.getdefaultencoding()) as f:
-					exec(f.read(), Phiori.objects)
+					module = compile(f.read(), os.path.join(path, "phiori", "builtins", filename), "exec")
+					exec(module, Phiori.objects)
 			except:
 				pass
 	for filename in os.listdir(path):
-		if filename.endswith(".py"):
+		if os.path.splitext(filename)[1] == ".py":
 			try:
 				with open(os.path.join(path, filename), "r", encoding=sys.getdefaultencoding()) as f:
-					exec(f.read(), Phiori.objects)
+					module = compile(f.read(), os.path.join(path, filename), "exec")
+					exec(module, Phiori.objects)
 			except:
 				pass
 	return True
@@ -131,19 +133,21 @@ def request(req, _len):
 	res = Shiori.makeresponse("phiori", 204)
 	if req.method == "GET":
 		res = Shiori.makeresponse("phiori")
-		res.headers["Value"] = ""
+		ss = None
 		if req.headers.get("ID", "").startswith("On") and req.headers.get("ID") in Phiori.handlers:
 			for handler in Phiori.handlers[req.headers.get("ID")]:
 				try:
 					ss = Phiori.event(handler, **req.headers)
 					if ss:
-						Phiori.response += str(ss)
-					del ss
-				except Exception as ex:
+						res.headers["Value"] = str(ss)
+					elif Phiori.response:
+						res.headers["Value"] = Phiori.response
 					Phiori.response = ""
-					res.headers["Value"] = r"{}\n\n{}\e".format(str(handler), str(ex))
+				except:
+					exc_type, exc_value, exc_traceback = sys.exc_info()
+					Phiori.response = ""
+					res.headers["Value"] = r"\0\b2\_q{}\x\c\e".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]"))
 					return str(res)
-			res.headers["Value"] = Phiori.response
 		elif req.headers.get("ID") and req.headers.get("ID") in Phiori.resources:
 			res.headers["Value"] = Phiori.resources["ID"]
 		else:
