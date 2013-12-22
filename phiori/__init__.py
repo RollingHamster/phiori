@@ -16,6 +16,7 @@ def load(path, _len):
 			"locale": locale.getdefaultlocale(),
 			"path": path,
 			"res": Phiori.resources,
+			"temp": Phiori.temps,
 			"var": Phiori.variables,
 			"words": Phiori.words,
 		}),

@@ -9,6 +9,7 @@ class Phiori:
 	objects = {}
 	resources = {}
 	response = ""
+	temps = {}
 	variables = None
 	words = None
 	
