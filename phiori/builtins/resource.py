@@ -1,5 +1,5 @@
 def loadres():
-	with open(os.path.join(path, "resource.txt"), "r") as f:
+	with open(os.path.join(phiori.path, "resource.txt"), "r", encoding=phiori.encoding) as f:
 		lines = f.read().replace("\r", "").split("\n")
 		for line in lines:
 			line = line.strip()
@@ -10,5 +10,5 @@ def loadres():
 				k, v = kv
 				phiori.res[k.strip()] = v.strip()
 
-if os.path.exists(os.path.join(path, "resource.txt")):
+if os.path.exists(os.path.join(phiori.path, "resource.txt")):
 	loadres()

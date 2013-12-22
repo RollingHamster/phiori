@@ -103,6 +103,8 @@ def load(path, _len):
 	}
 	Phiori.objects["_"] = Phiori.objects["phiori"]
 	Phiori.objects["P"] = Phiori.objects["phiori"]
+	Phiori.variables["_boot"] = {}
+	Phiori.variables["_boot"]["loaderr"] = []
 	for filename in os.listdir(os.path.join(path, "phiori", "builtins")):
 		if os.path.splitext(filename)[1] == ".py":
 			try:
@@ -110,7 +112,7 @@ def load(path, _len):
 					module = compile(f.read(), os.path.join(path, "phiori", "builtins", filename), "exec")
 					exec(module, Phiori.objects)
 			except:
-				pass
+				Phiori.variables["_boot"]["loaderr"].append(r"{}".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]")))
 	for filename in os.listdir(path):
 		if os.path.splitext(filename)[1] == ".py":
 			try:
@@ -118,7 +120,7 @@ def load(path, _len):
 					module = compile(f.read(), os.path.join(path, filename), "exec")
 					exec(module, Phiori.objects)
 			except:
-				pass
+				Phiori.variables["_boot"]["loaderr"].append(r"{}".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]")))
 	return True
 
 def unload():
@@ -149,7 +151,7 @@ def request(req, _len):
 					res.headers["Value"] = r"\0\b2\_q{}\x\c\e".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]"))
 					return str(res)
 		elif req.headers.get("ID") and req.headers.get("ID") in Phiori.resources:
-			res.headers["Value"] = Phiori.resources["ID"]
+			res.headers["Value"] = Phiori.resources[req.headers.get("ID")]
 		else:
 			res = Shiori.makeresponse("phiori", 204)
 	elif req.method == "NOTIFY":

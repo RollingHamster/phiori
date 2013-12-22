@@ -30,11 +30,12 @@ class Phiori:
 		return result
 	
 	@staticmethod
-	def handle(event):
+	def handle(*events):
 		def decorator(func):
-			if not Phiori.handlers.get(event):
-				Phiori.handlers[event] = []
-			Phiori.handlers[event].append(func)
+			for event in events:
+				if not Phiori.handlers.get(event):
+					Phiori.handlers[event] = []
+				Phiori.handlers[event].append(func)
 			def wrapper(*args, **kwargs):
 				return Phiori.event(func, *args, **kwargs)
 			return wrapper
