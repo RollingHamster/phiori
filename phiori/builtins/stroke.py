@@ -13,6 +13,17 @@ def _stroke_mousemove(*args, **kwargs):
 		now = time.time()
 		if now > phiori.var["stroke.begintime"] + 2:
 			if phiori.var["stroke.point"] / (now - phiori.var["stroke.begintime"]) > 16:
-				yield r"\![raise,OnStroke,{},{},{}]".format(phiori.var["stroke.target"], phiori.var["stroke.collision"], phiori.var["stroke.point"])
+				phiori.temp["stroke.raise"] = True
+				phiori.temp["stroke.target"], phiori.temp["stroke.collision"], phiori.temp["stroke.point"] = phiori.var["stroke.target"], phiori.var["stroke.collision"], phiori.var["stroke.point"]
 				phiori.var["stroke.collision"] = ""
 				phiori.var["stroke.point"] = 0
+
+@handle("OnSecondChange")
+def _stroke_secondchange(*args, **kwargs):
+	if phiori.temp.get("stroke.raise"):
+		if int(kwargs["Reference3"]):
+			yield r"\![raise,OnStroke,{},{},{}]".format(phiori.temp["stroke.target"], phiori.temp["stroke.collision"], phiori.temp["stroke.point"])
+		del phiori.temp["stroke.raise"]
+		del phiori.temp["stroke.target"]
+		del phiori.temp["stroke.collision"]
+		del phiori.temp["stroke.point"]
