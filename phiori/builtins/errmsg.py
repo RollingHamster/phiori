@@ -1,5 +1,5 @@
-@handle("OnBoot", "OnFirstBoot")
-def _boot(*args, **kwargs):
+@handle("OnSecondChange")
+def _errmsg_secondchange(*args, **kwargs):
 	if "_boot" in phiori.var:
 		loaderrs = phiori.var["_boot"].get("loaderr")
 		if loaderrs:
