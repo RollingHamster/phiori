@@ -1,4 +1,5 @@
 import sys, os, traceback
+import random
 from collections import Iterable
 
 class Phiori:
@@ -50,8 +51,25 @@ class Phiori:
 	
 	@staticmethod
 	def write(text, *args, **kwargs):
+		args = list(args)
+		if isinstance(text, list) or isinstance(text, tuple) or isinstance(text, set):
+			text = random.choice(text)
+		elif isinstance(text, dict):
+			text = random.choice(text.items())
+		if args:
+			for i, a in enumerate(args):
+				if isinstance(a, list) or isinstance(a, tuple) or isinstance(a, set):
+					args[i] = random.choice(a)
+				elif isinstance(a, dict):
+					args[i] = random.choice(a.items())
+		if kwargs:
+			for k, v in kwargs.items():
+				if isinstance(v, list) or isinstance(v, tuple) or isinstance(v, set):
+					kwargs[k] = random.choice(v)
+				elif isinstance(v, dict):
+					kwargs[k] = random.choice(v.items())
 		Phiori.response += text.format(*args, **kwargs)
 	
 	@staticmethod
 	def writeline(text, *args, **kwargs):
-		Phiori.response += text.format(*args, **kwargs) + r"\n"
+		write(text + r"\n", *args, **kwargs)
