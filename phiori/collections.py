@@ -14,9 +14,12 @@ class LiveDict(dict):
 	
 	def _live(func):
 		def wrap(self, *args, **kwargs):
-			result = func(self, *args, **kwargs)
-			with open(self.filename, "w", encoding=sys.getdefaultencoding()) as f:
-				f.write(self.__str__())
+			try:
+				result = func(self, *args, **kwargs)
+				with open(self.filename, "w", encoding=sys.getdefaultencoding()) as f:
+					f.write(self.__str__())
+			except:
+				pass
 			return result
 		return wrap
 	
@@ -28,7 +31,6 @@ class LiveDict(dict):
 	setdefault = _live(dict.setdefault)
 	update = _live(dict.update)
 
-	
 class LiveJsonDict(dict):
 	
 	def __init__(self, file, *args, **kwargs):
@@ -42,10 +44,13 @@ class LiveJsonDict(dict):
 	
 	def _live(func):
 		def wrap(self, *args, **kwargs):
-			result = func(self, *args, **kwargs)
-			with open(self.filename, "w", encoding=sys.getdefaultencoding()) as f:
-				json.dump(self, f, ensure_ascii=False, sort_keys=True, indent=4)
-			return result
+			try:
+				result = func(self, *args, **kwargs)
+				with open(self.filename, "w", encoding=sys.getdefaultencoding()) as f:
+					json.dump(self, f, ensure_ascii=False, sort_keys=True, indent=4)
+				return result
+			except:
+				pass
 		return wrap
 	
 	__setitem__ = _live(dict.__setitem__)
