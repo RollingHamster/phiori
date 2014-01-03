@@ -1,5 +1,5 @@
 phiori - python3-based SHIORI for Ukagaka
-Copyright (C) 2013  Minacle
+Copyright (C) 2013-2014  Minacle
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
