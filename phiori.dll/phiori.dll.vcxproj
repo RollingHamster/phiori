@@ -47,7 +47,7 @@
       <SDLCheck>
       </SDLCheck>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <UseUnicodeForAssemblerListing>true</UseUnicodeForAssemblerListing>
       <BufferSecurityCheck>
       </BufferSecurityCheck>
