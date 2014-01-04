@@ -17,7 +17,7 @@ def saveconfig():
 
 def defaultconfig():
 	phiori.config = {
-		"talk.interval": 15,
+		"talk.interval": 60,
 	}
 
 if os.path.exists(os.path.join(phiori.path, "config.txt")):
