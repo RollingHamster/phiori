@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, locale
 from collections import OrderedDict
 
 class Shiori:
@@ -10,7 +10,12 @@ class Shiori:
 		pass
 	
 	@staticmethod
-	def fromrequest(req):
+	def fromrequest(req, encoding=None):
+		if not encoding:
+			_req = Shiori.fromrequest(req, "ascii")
+			encoding = _req.headers.get("Charset", locale.getdefaultlocale())
+			del _req
+		req = req.decode(encoding, "replace")
 		lines = req.split("\r\n")
 		line = lines[0]
 		shiori = Shiori()
@@ -35,13 +40,13 @@ class Shiori:
 		return shiori
 	
 	@staticmethod
-	def makeresponse(sender, code=200, headers={}, contents=""):
+	def makerequest(sender, method="GET", headers={}, contents="", encoding="utf-8"):
 		shiori = Shiori()
-		shiori.type = "response"
+		shiori.type = "request"
+		shiori.method = method
 		shiori.version = Shiori.VERSION3
-		shiori.code = code
 		shiori.headers = OrderedDict({
-			"Charset": sys.getdefaultencoding(),
+			"Charset": encoding,
 			"Sender": sender
 		})
 		shiori.headers.update(headers)
@@ -49,8 +54,22 @@ class Shiori:
 		return shiori
 	
 	@staticmethod
-	def makeresponse2(sender, code=200, headers={}, contents=""):
-		shiori = Shiori.makeresponse(sender, code, headers, contents)
+	def makeresponse(sender, code=200, headers={}, contents="", encoding="utf-8"):
+		shiori = Shiori()
+		shiori.type = "response"
+		shiori.version = Shiori.VERSION3
+		shiori.code = code
+		shiori.headers = OrderedDict({
+			"Charset": encoding,
+			"Sender": sender
+		})
+		shiori.headers.update(headers)
+		shiori.contents = contents
+		return shiori
+	
+	@staticmethod
+	def makeresponse2(sender, code=200, headers={}, contents="", encoding="utf-8"):
+		shiori = Shiori.makeresponse(sender, code, headers, contents, encoding)
 		shiori.version = Shiori.VERSION2
 		return shiori
 	

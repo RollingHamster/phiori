@@ -1,19 +1,22 @@
 import sys, os, traceback
-import datetime, json, locale, random, re, time, urllib.request, urllib.parse
+import datetime, json, random, re, time, urllib.request, urllib.parse, yaml
 from .shiori import *
 from .phiori import *
-from .collections import LiveDict, LiveJsonDict, PropertyDict
+from .collections import LiveDict, LiveJsonDict, LiveBsonDict, LivePersonaDict, PropertyDict
 
 def load(path, _len):
-	Phiori.variables = LiveDict(os.path.join(path, "variable.dat"))
+	Phiori.configs = LivePersonaDict(os.path.join(path, "config.txt"))
+	Phiori.resources = LivePersonaDict(os.path.join(path, "resource.txt"))
+	Phiori.variables = LiveBsonDict(os.path.join(path, "variable.dat"))
 	Phiori.words = LiveJsonDict(os.path.join(path, "words.dic"))
+	Phiori.encoding = Phiori.configs.get("encoding", "utf-8")
 	Phiori.objects = {
 		#phiori variables
 		"phiori": PropertyDict({
 			"config": Phiori.configs,
-			"encoding": sys.getdefaultencoding(),
+			"encoding": Phiori.encoding,
 			"info": Phiori.info,
-			"locale": locale.getdefaultlocale(),
+			"locale": Phiori.locale,
 			"path": path,
 			"res": Phiori.resources,
 			"temp": Phiori.temps,
@@ -29,6 +32,7 @@ def load(path, _len):
 		"sys": sys,
 		"time": time,
 		"urllib": urllib,
+		"yaml": yaml,
 		#builtin functions
 		"abs": abs,
 		"all": all,
@@ -99,69 +103,36 @@ def load(path, _len):
 		#phiori functions
 		"handle": Phiori.handle,
 		"print": Phiori.print,
+		"simulate": Phiori.simulate,
 		"write": Phiori.write,
 		"writeline": Phiori.writeline,
 	}
 	Phiori.objects["_"] = Phiori.objects["phiori"]
 	Phiori.objects["P"] = Phiori.objects["phiori"]
-	Phiori.variables["_boot"] = {}
-	Phiori.variables["_boot"]["loaderr"] = []
+	Phiori.temps["_boot"] = {}
+	Phiori.temps["_boot"]["loaderr"] = []
 	for filename in os.listdir(os.path.join(path, "phiori", "builtins")):
 		if os.path.splitext(filename)[1] == ".py":
 			try:
-				with open(os.path.join(path, "phiori", "builtins", filename), "r", encoding=sys.getdefaultencoding()) as f:
+				with open(os.path.join(path, "phiori", "builtins", filename), "r", encoding=Phiori.encoding) as f:
 					module = compile(f.read(), os.path.join(path, "phiori", "builtins", filename), "exec")
 					exec(module, Phiori.objects)
 			except:
-				Phiori.variables["_boot"]["loaderr"].append(r"{}".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]")))
+				Phiori.temps["_boot"]["loaderr"].append(r"Error has occurred while loading builtin modules.\n\n" + r"{}".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]")))
 	for filename in os.listdir(path):
 		if os.path.splitext(filename)[1] == ".py":
 			try:
-				with open(os.path.join(path, filename), "r", encoding=sys.getdefaultencoding()) as f:
+				with open(os.path.join(path, filename), "r", encoding=Phiori.encoding) as f:
 					module = compile(f.read(), os.path.join(path, filename), "exec")
 					exec(module, Phiori.objects)
 			except:
-				Phiori.variables["_boot"]["loaderr"].append(r"{}".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]")))
+				Phiori.temps["_boot"]["loaderr"].append(r"Error has occurred while loading user modules.\n\n" + r"{}".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]")))
 	return True
 
 def unload():
-	try:
-		Phiori.objects["saveconfig"]()
-	except:
-		pass
 	return True
 
 def request(req, _len):
 	req = Shiori.fromrequest(req)
-	res = Shiori.makeresponse("phiori", 204)
-	if req.method == "GET":
-		res = Shiori.makeresponse("phiori")
-		ss = None
-		if req.headers.get("ID", "").startswith("On") and req.headers.get("ID") in Phiori.handlers:
-			for handler in Phiori.handlers[req.headers.get("ID")]:
-				try:
-					ss = Phiori.event(handler, **req.headers)
-					if ss:
-						res.headers["Value"] = str(ss)
-					elif Phiori.response:
-						res.headers["Value"] = Phiori.response
-					Phiori.response = ""
-				except:
-					exc_type, exc_value, exc_traceback = sys.exc_info()
-					Phiori.response = ""
-					res.headers["Value"] = r"\0\b2\_q{}\x\c\e".format(traceback.format_exc().replace("\\", "\\\\").replace("\n", r"\n\n[half]"))
-					return str(res)
-		elif req.headers.get("ID") and req.headers.get("ID") in Phiori.resources:
-			res.headers["Value"] = Phiori.resources[req.headers.get("ID")]
-		else:
-			res = Shiori.makeresponse("phiori", 204)
-	elif req.method == "NOTIFY":
-		key = req.headers.get("ID")
-		if key:
-			value = {}
-			for k, v in req.headers.items():
-				if k.startswith("Reference"):
-					value[int(k[9:])] = v
-			Phiori.info[key] = value
-			res = Shiori.makeresponse("phiori", 204)
-	return str(res)
+	res = process(req)
+	return str(res).encode(res.headers.get("Charset", Phiori.encoding))

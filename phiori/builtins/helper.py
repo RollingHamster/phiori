@@ -1,3 +1,25 @@
+def escape(text):
+	text = str(text)
+	chars = "\\,()[]{}"
+	res = ""
+	for i, c in enumerate(text):
+		if c in chars:
+			res += "\\" + c
+		else:
+			res += c
+	return res
+_escape = escape
+
+def event(onid, *refs):
+	res = r"\![raise,{}".format(onid)
+	if refs:
+		res += ","
+		for ref in refs:
+			res += ref + ","
+		res = res[:-1]
+	res += "]"
+	return res
+
 def initsurface(count=2):
 	res = ""
 	for i in range(0, count - 1):
@@ -18,24 +40,25 @@ def makemenu(*args, **kwargs):
 			items[k] = v
 	for k, v in items.items():
 		res += makemenuitem(v, k)
+	res += r"\n"
 	return res
 
-def makemenuitem(title, id=None, *args):
-	res = r"\![*]\q[{}".format(title)
+def makemenuitem(title, id=None, *args, escape=True):
+	res = r"\![*]\q[{}".format(_escape(title) if escape else title)
 	if id:
 		res += ",{}".format(id)
 	else:
-		res += ",{}".format(title)
+		res += ",{}".format(_escape(title) if escape else title)
 	if isinstance(id, str):
 		if id.startswith("On"):
 			res += ","
 			for arg in args:
-				res += arg + ","
+				res += (_escape(arg) if escape else arg) + ","
 			res = res[:-1]
 	res += r"]\n"
 	return res
 
-def say(narrator, surface=None, text=None):
+def say(narrator, surface=None, text=None, escape=True):
 	res = ""
 	if narrator > 1:
 		res += r"\p[{}]".format(narrator)
@@ -50,6 +73,15 @@ def say(narrator, surface=None, text=None):
 	else:
 		text = surface
 	if text:
-		res += str(text)
+		res += str(_escape(text) if escape else text)
 	res += r"\n\n"
+	return res
+
+def wait(delay=None):
+	res = r"\__w["
+	if delay is None or not isinstance(delay, int):
+		res += "clear"
+	else:
+		res += str(delay)
+	res += "]"
 	return res

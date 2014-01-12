@@ -3,19 +3,19 @@ def _mouse_mouseclick(*args, **kwargs):
 	if not kwargs.get("Status"):
 		if int(kwargs["Reference5"]) == 0:
 			if int(kwargs["Reference3"]) == 0:
-				yield r"\![raise,OnSakuraMouseClick,{Reference0},{Reference1},{Reference2},{Reference3},{Reference4},{Reference5}]".format(**kwargs)
+				yield simulate("OnSakuraMouseClick", kwargs["Reference0"], kwargs["Reference1"], kwargs["Reference2"], kwargs["Reference3"], kwargs["Reference4"], kwargs["Reference5"])
 			elif int(kwargs["Reference3"]) == 1:
-				yield r"\![raise,OnKeroMouseClick,{Reference0},{Reference1},{Reference2},{Reference3},{Reference4},{Reference5}]".format(**kwargs)
+				yield simulate("OnKeroMouseClick", kwargs["Reference0"], kwargs["Reference1"], kwargs["Reference2"], kwargs["Reference3"], kwargs["Reference4"], kwargs["Reference5"])
 			else:
-				yield r"\![raise,OnCharacterMouseClick,{Reference0},{Reference1},{Reference2},{Reference3},{Reference4},{Reference5}]".format(**kwargs)
+				yield simulate("OnCharacterMouseClick", kwargs["Reference0"], kwargs["Reference1"], kwargs["Reference2"], kwargs["Reference3"], kwargs["Reference4"], kwargs["Reference5"])
 
 @handle("OnMouseDoubleClick")
 def _mouse_mousedoubleclick(*args, **kwargs):
 	if not kwargs.get("Status"):
 		if int(kwargs["Reference5"]) == 0:
 			if int(kwargs["Reference3"]) == 0:
-				yield r"\![raise,OnSakuraMouseDoubleClick,{Reference0},{Reference1},{Reference2},{Reference3},{Reference4},{Reference5}]".format(**kwargs)
+				yield simulate("OnSakuraMouseDoubleClick", kwargs["Reference0"], kwargs["Reference1"], kwargs["Reference2"], kwargs["Reference3"], kwargs["Reference4"], kwargs["Reference5"])
 			elif int(kwargs["Reference3"]) == 1:
-				yield r"\![raise,OnKeroMouseDoubleClick,{Reference0},{Reference1},{Reference2},{Reference3},{Reference4},{Reference5}]".format(**kwargs)
+				yield simulate("OnKeroMouseDoubleClick", kwargs["Reference0"], kwargs["Reference1"], kwargs["Reference2"], kwargs["Reference3"], kwargs["Reference4"], kwargs["Reference5"])
 			else:
-				yield r"\![raise,OnCharacterMouseDoubleClick,{Reference0},{Reference1},{Reference2},{Reference3},{Reference4},{Reference5}]".format(**kwargs)
+				yield simulate("OnCharacterMouseDoubleClick", kwargs["Reference0"], kwargs["Reference1"], kwargs["Reference2"], kwargs["Reference3"], kwargs["Reference4"], kwargs["Reference5"])

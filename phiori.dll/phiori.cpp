@@ -63,7 +63,7 @@ extern "C" __declspec(dllexport) HGLOBAL __cdecl request(HGLOBAL h, long *len) {
 		memcpy(req, (char *)h, *len);
 		GlobalFree(h);
 		PyObject *func = PyDict_GetItemString(phioriDict, "request");
-		PyObject *arg0 = PyUnicode_FromStringAndSize(req, *len);
+		PyObject *arg0 = PyBytes_FromStringAndSize(req, *len);
 		PyObject *arg1 = PyLong_FromLong(*len);
 		PyObject *args = PyTuple_Pack(2, arg0, arg1);
 		PyObject *result = PyObject_CallObject(func, args);
@@ -83,7 +83,7 @@ extern "C" __declspec(dllexport) HGLOBAL __cdecl request(HGLOBAL h, long *len) {
 			return hResult;
 		}
 		free(req);
-		char *_result = PyUnicode_AsUTF8(result);
+		char *_result = PyBytes_AsString(result);
 		*len = strlen(_result);
 		HGLOBAL hResult = GlobalAlloc(GMEM_FIXED, *len);
 		memcpy((char *)hResult, _result, *len);
