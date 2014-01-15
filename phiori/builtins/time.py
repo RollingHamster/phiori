@@ -1,3 +1,53 @@
+class Timer(object):
+	
+	def __init__(self, name=None, interval=0, loop=False):
+		if name:
+			self.name = "#timer:" + str(name)
+		else:
+			self.name = "#timer:{}:{:07}".format(hex(int(time.time())), random.randint(0, 9999999))
+		self.interval = interval
+		self.loop = loop
+		phiori.temp[self.name] = self
+	
+	def start(self):
+		self._begin = time.time()
+	
+	def stop(self):
+		del self._begin
+	
+	def __call__(self):
+		if getattr(self, "_begin", None):
+			if self._begin + self.interval <= time.time():
+				yield simulate("OnTimerElapsed", self.name[7:], self.interval, (1 if self.loop else 0))
+				if self.loop:
+					self.start()
+				else:
+					self.stop()
+	
+	@staticmethod
+	def setinterval(name=None, interval=None):
+		if interval is None:
+			name, interval = interval, name
+		timer = Timer(name, interval, True)
+		timer.start()
+		return timer
+	
+	@staticmethod
+	def settimeout(name=None, delay=None):
+		if delay is None:
+			name, delay = delay, name
+		timer = Timer(name, delay, False)
+		timer.start()
+		return timer
+
+@handle("OnSecondChange")
+def _time_secondchange(*args, **kwargs):
+	for k, v in phiori.temp.items():
+		if str(k).startswith("#timer:"):
+			for d in v():
+				if d:
+					yield d
+
 @handle("OnMinuteChange")
 def _time_minutechange(*args, **kwargs):
 	now = datetime.datetime.today()
