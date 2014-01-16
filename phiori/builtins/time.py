@@ -7,6 +7,7 @@ class Timer(object):
 			self.name = "#timer:{}:{:07}".format(hex(int(time.time())), random.randint(0, 9999999))
 		self.interval = interval
 		self.loop = loop
+		self._dispose = False
 		phiori.temp[self.name] = self
 	
 	def start(self):
@@ -23,6 +24,7 @@ class Timer(object):
 					self.start()
 				else:
 					self.stop()
+					self._dispose = True
 	
 	@staticmethod
 	def setinterval(name=None, interval=None):
@@ -42,11 +44,17 @@ class Timer(object):
 
 @handle("OnSecondChange")
 def _time_secondchange(*args, **kwargs):
+	disposal = []
 	for k, v in phiori.temp.items():
 		if str(k).startswith("#timer:"):
-			for d in v():
-				if d:
-					yield d
+			if int(kwargs["Reference3"]):
+				for d in v():
+					if d:
+						yield d
+			if v._dispose:
+				disposal.append(phiori.temp[k])
+	for i in disposal:
+		del i
 
 @handle("OnMinuteChange")
 def _time_minutechange(*args, **kwargs):
