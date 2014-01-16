@@ -22,7 +22,7 @@ def _stroke_secondchange(*args, **kwargs):
 	if phiori.temp.get("stroke.raise"):
 		if int(kwargs["Reference3"]):
 			yield simulate("OnStroke", phiori.temp["stroke.target.active"], phiori.temp["stroke.collision.active"], phiori.temp["stroke.point.active"])
-		del phiori.temp["stroke.raise.active"]
+		del phiori.temp["stroke.raise"]
 		del phiori.temp["stroke.target.active"]
 		del phiori.temp["stroke.collision.active"]
 		del phiori.temp["stroke.point.active"]
